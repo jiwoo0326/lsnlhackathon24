@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>ラボごっち</title>
+  </head>
+  <body>
+    <div id="game-container">
+      <!-- ヘッダー部分 -->
+      <div id="header">
+        <!-- レベル表示と進捗バー -->
+        <div id="level-container">
+          <p>レベル: <span id="level">1</span></p>
+          <div id="progress-bar">
+            <div id="progress-fill" style="width: 30%"></div>
+          </div>
+          <!-- ステータスゲージ -->
+          <div id="status-bars">
+            <div id="hunger-gauge" class="circle-gauge">
+              <div class="circle">50</div>
+              <p>満腹度</p>
+            </div>
+            <div id="cleanliness-gauge" class="circle-gauge">
+              <div class="circle">50</div>
+              <p>清潔度</p>
+            </div>
+            <div id="comfort-gauge" class="circle-gauge">
+              <div class="circle">50</div>
+              <p>快適度</p>
+            </div>
+            <div id="happiness-gauge" class="circle-gauge">
+              <div class="circle">50</div>
+              <p>幸福度</p>
+            </div>
+          </div>
+        </div>
+        <!-- 右上の時計 -->
+        <div id="date-container">
+          <div id="clock-container">
+            <p id="date"></p>
+            <p id="time"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- キャラクター部分 -->
+      <div id="character-container">
+        <img
+          id="character"
+          src="images/normal.png"
+          alt="たまごっちキャラクター"
+        />
+      </div>
+
+      <!-- アクションボタン部分 -->
+      <div id="action-buttons">
+      <!-- ボタンの変更 -->
+    <button onclick="showModal('feed')">
+      <div class="icon-container">
+      <img src="images/carrot.png" alt="餌" class="button-icon" />
+      </div>
+      <span>進捗</span>
+    </button>
+
+    <button onclick="showModal('bath')">
+      <div class="icon-container">
+      <img src="images/bath.png" alt="お風呂" class="button-icon" />
+      </div>
+      <span>会議参加</span>
+    </button>
+
+    <button onclick="showModal('toilet')">
+      <div class="icon-container">
+      <img src="images/toilet.png" alt="トイレ" class="button-icon" />
+      </div>
+      <span>論文読む</span>
+    </button>
+
+    <button onclick="showModal('play')">
+      <div class="icon-container">
+      <img src="images/toy.png" alt="遊ぶ" class="button-icon" />
+      </div>
+      <span>交流</span>
+    </button>
+        <button onclick="toggleHelp()">
+          <div class="icon-container">
+            <img src="images/help.png" alt="ヘルプ" class="button-icon" />
+          </div>
+          <span>ヘルプ</span>
+        </button>
+      </div>
+    </div>
+
+<!-- モーダル (ポップアップ) -->
+<div id="action-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="toggleModal()">&times;</span>
+    <h2 id="modal-title">アクション選択</h2>
+    <p id="modal-progress" style="display: none;">全体進捗度 0/10000</p> <!-- 修正 -->
+    <p id="completed-count" style="display: none;">完了数: 0/19</p> <!-- 完了数表示 -->
+    <label for="new-value" id="new-value-label">進捗度:</label> <!-- ラベルのIDを追加 -->
+    <input type="number" id="new-value" min="0" max="100000" />
+    <button onclick="submitAction()">送信</button>
+    <button id="complete-button" style="display: none;" onclick="completeReading()">完了</button>
+  </div>
+</div>
+    
+
+<!-- ヘルプモーダル -->
+<div id="help-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="toggleHelp()">&times;</span>
+    <h2>たまごっち育成ゲーム - ルール</h2>
+    <p class="intro">
+      研究室でペットを飼うことになりました!!!<br />
+      <strong>名前は "たまごっち" です。</strong>
+    </p>
+    <p>責任をもって毎日「えさ・お風呂・トイレ・お散歩」をこなしましょう！</p>
+    <div class="rules-container">
+      <ul class="rules-list">
+        <li>
+          <span class="rule-icon">🍴</span>
+          <strong>えさ (満腹度):</strong> 研究室メンバの論文の進捗の合計でえさのランクが決まります！
+        </li>
+        <li>
+          <span class="rule-icon">🛁</span>
+          <strong>お風呂 (清潔度):</strong> ミーティングに参加した人数が8割を満たせば、お風呂に入れます！
+        </li>
+        <li>
+          <span class="rule-icon">🚽</span>
+          <strong>トイレ (快適度):</strong> メンバが読んだ論文のページ数が一定値を超えるとトイレが可能！
+        </li>
+        <li>
+          <span class="rule-icon">🌟</span>
+          <strong>お散歩 (幸福度):</strong> 研究室行事を開催するごとに散歩に行けます！
+        </li>
+      </ul>
+    </div>
+    <p class="notice">
+      <strong>注意:</strong> 2つ以上のステータスが80以上の状態が3日続くと、ペットはレベルアップしますが、いずれかのステータスが20未満の状態が2日続くと、たまごっちは帰らぬものとなります。
+    </p>
+    <div class="button-container">
+      <button class="modal-button" onclick="toggleHelp()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+</body>
+
+    <script>
+let currentAction = ''; // 現在選択されているアクション
+let currentProgress = 0; // 現在の進捗度
+let completedCount = 0;  // 完了数
+let toiletCount = 0; // サーバーから受け取るトイレの押下人数
+
+// socket.io 接続
+const socket = io();
+
+// サーバーから状態を受け取る
+socket.on("updateState", (state) => {
+  console.log("State updated:", state); // デバッグ用ログ
+  document.querySelector("#hunger-gauge .circle").textContent = state.hunger;
+  document.querySelector("#cleanliness-gauge .circle").textContent = state.cleanliness;
+  document.querySelector("#comfort-gauge .circle").textContent = state.comfort;
+  document.querySelector("#happiness-gauge .circle").textContent = state.happiness;
+});
+
+// 進捗度の更新を受け取る
+socket.on("progressUpdate", (progress) => {
+  currentProgress = progress;
+  updateModalProgress(); // モーダルを更新
+});
+socket.on("toiletProgressUpdate", (total) => {
+  const completedCountElement = document.getElementById("completed-count");
+  completedCountElement.textContent = `完了数: ${total}/19`; // 合計人数を更新
+});
+
+
+function showModal(action) {
+  currentAction = action; // 現在のアクションを保存
+
+  // モーダルの初期化
+  const modalTitle = document.getElementById("modal-title");
+  const progressElement = document.getElementById("modal-progress");
+  const newValueLabel = document.getElementById("new-value-label");
+  const completedCountElement = document.getElementById("completed-count");
+  const input = document.getElementById("new-value");
+
+  // すべて非表示にする（初期化）
+  progressElement.style.display = "none";
+  completedCountElement.style.display = "none";
+  input.style.display = "block"; // 入力欄をデフォルトで表示
+
+  // ボタンの種類に応じた設定
+if (action === "feed") {
+  modalTitle.innerHTML = "<span style='color:#FF6347'>🍎 餌をあげる</span>";
+  newValueLabel.textContent = "進捗度を入力してください:";
+  progressElement.style.display = "block"
+  } else if (action === "bath") {
+  modalTitle.innerHTML = "<span style='color:#00BFFF'>🛁 お風呂タイム</span>";
+  newValueLabel.textContent = "参加人数を入力してください:";
+} else if (action === "toilet") {
+  modalTitle.innerHTML = "<span style='color:#6A5ACD'>🚽 トイレチェック</span>";
+  newValueLabel.textContent = "読んだ論文の数を入力してください:";
+} else if (action === "play") {
+  modalTitle.innerHTML = "<span style='color:#FF69B4'>🎉 遊びの時間</span>";
+  newValueLabel.textContent = "親睦会のアイディアを記入:";
+  input.style.display = "none"; // 入力欄を非表示
+}
+
+  // モーダルを表示
+  document.getElementById("action-modal").style.display = "block";
+
+
+  // モーダル内の進捗度表示を更新
+function updateModalProgress() {
+  const progressElement = document.getElementById("modal-progress");
+  progressElement.textContent = `全体進捗度 ${currentProgress}/10000`;
+}
+  // モーダル内の進捗度表示を更新
+  updateModalProgress();
+  // モーダルを表示
+  document.getElementById("action-modal").style.display = "block";
+}
+
+
+
+// 会議参加ボタンを押した場合
+function submitAction() {
+  const newValue = parseInt(document.getElementById("new-value").value, 10);
+  
+  if (currentAction === 'bath') {
+    // 人数が入力された場合、15/19以上で清潔度を100に設定
+    const participants = parseInt(newValue);
+    if (participants >= 15) {
+      socket.emit("action", { action: currentAction, value: 100 }); // 清潔度100に設定
+      alert("会議参加人数が十分です!清潔度が100に設定されました。");
+    } else {
+      socket.emit("action", { action: currentAction, value: participants }); // 清潔度の更新はしない
+    }
+  } else if (currentAction === "toilet" && !isNaN(newValue)) {
+    socket.emit("action", { action: currentAction, value: newValue }); // サーバーに人数を送信
+    document.getElementById("new-value").value = ""; // 入力欄をリセット
+    toggleModal(); // モーダルを閉じる
+  }
+  else {
+    // 進捗アクション（feed）の場合は進捗度を送信
+    if (newValue !== '') {
+      socket.emit("action", { action: currentAction, value: parseInt(newValue) });
+      toggleModal(); // モーダルを閉じる
+    } else {
+      alert("値を入力してください！");
+    }
+  }}
+// モーダルを閉じる
+function toggleModal() {
+  document.getElementById("action-modal").style.display = "none";
+}
+
+
+
+    </script>
+    <!-- JavaScript -->
+    <script>
+      // 時計をリアルタイムで更新
+      function updateClock() {
+        const now = new Date();
+        const date = now.toLocaleDateString("ja-JP", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          weekday: "long",
+        });
+        const time = now.toLocaleTimeString("ja-JP", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+
+        document.getElementById("date").textContent = date; // 日付を表示
+        document.getElementById("time").textContent = time; // 時間を表示
+      }
+
+      // 1秒ごとに時計を更新
+      setInterval(updateClock, 1000);
+      updateClock(); // 初期値の設定
+
+      // ボタンのアクション処理
+      function action(type) {
+        console.log(`${type} ボタンが押されました！`);
+      }
+
+      // ヘルプモーダルの表示/非表示
+      function toggleHelp() {
+        const modal = document.getElementById("help-modal");
+        modal.style.display =
+          modal.style.display === "block" ? "none" : "block";
+      }
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>たまごっち育成ゲーム</title>
+</head>
+<body>
+  <div id="game-container">
+    <!-- ヘッダー部分 -->
+    <div id="header">
+      <!-- レベル表示と進捗バー -->
+      <div id="level-container">
+        <p>レベル: <span id="level">1</span></p>
+        <div id="progress-bar">
+          <div id="progress-fill" style="width: 30%;"></div>
+        </div>
+        <!-- ステータスゲージ -->
+        <div id="status-bars">
+          <!-- 満腹度 -->
+          <div id="hunger-gauge" class="circle-gauge">
+            <div class="circle">45</div>
+            <p>満腹度</p>
+          </div>
+          <!-- 清潔度 -->
+          <div id="cleanliness-gauge" class="circle-gauge">
+            <div class="circle">72</div>
+            <p>清潔度</p>
+          </div>
+          <!-- 快適度 -->
+          <div id="comfort-gauge" class="circle-gauge">
+            <div class="circle">39</div>
+            <p>快適度</p>
+          </div>
+          <!-- 幸福度 -->
+          <div id="happiness-gauge" class="circle-gauge">
+            <div class="circle">39</div>
+            <p>幸福度</p>
+          </div>
+        </div>
+      </div>
+      <!-- 右上の時計 -->
+      <div id="date-container">
+        <div id="clock-container">
+          <p id="date"></p>
+          <p id="time"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- キャラクター部分 -->
+    <div id="character-container">
+      <img id="character" src="images/normal.png" alt="たまごっちキャラクター">
+    </div>
+
+    <!-- アクションボタン部分 -->
+    <div id="action-buttons">
+      <button onclick="action('feed')">
+        <div class="icon-container">
+          <img src="images/carrot.png" alt="餌" class="button-icon">
+        </div>
+        <span>進捗</span>
+      </button>
+      <button onclick="action('bath')">
+        <div class="icon-container">
+          <img src="images/bath.png" alt="お風呂" class="button-icon">
+        </div>
+        <span>会議参加</span>
+      </button>
+      <button onclick="action('toilet')">
+        <div class="icon-container">
+          <img src="images/toilet.png" alt="トイレ" class="button-icon">
+        </div>
+        <span>論文読む</span>
+      </button>
+      <button onclick="action('play')">
+        <div class="icon-container">
+          <img src="images/toy.png" alt="遊ぶ" class="button-icon">
+        </div>
+        <span>交流</span>
+      </button>
+      <button onclick="action('help')">
+        <div class="icon-container">
+          <img src="images/help.png" alt="ヘルプ" class="button-icon">
+        </div>
+        <span>ヘルプ</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // 時計をリアルタイムで更新
+    function updateClock() {
+      const now = new Date();
+      const date = now.toLocaleDateString('ja-JP', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long'
+      });
+      const time = now.toLocaleTimeString('ja-JP', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+
+      document.getElementById('date').textContent = date; // 日付を表示
+      document.getElementById('time').textContent = time; // 時間を表示
+    }
+
+    // 1秒ごとに時計を更新
+    setInterval(updateClock, 1000);
+    updateClock(); // 初期値の設定
+
+    // ボタンのアクション処理
+    function action(type) {
+      console.log(`${type} ボタンが押されました！`);
+      // 各アクションに応じた処理を追加できます。
+    }
+  </script>
+</body>
+</html>
