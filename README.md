@@ -1,1 +1,1 @@
-# tamagochi
+# labogocchi
